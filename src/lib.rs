@@ -75,6 +75,7 @@ impl MovieList {
     fn new() -> Self {
         Self { data: Vec::new() }
     }
+
     fn push(&mut self, movie: Movie) {
         self.data.push(movie);
     }
