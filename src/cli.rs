@@ -10,6 +10,6 @@ fn _writeln(bytes: &[u8]) {
 pub fn run() {
     let mut movies = read_movies(io::stdin());
     println!("Total: {}", movies.len());
-    movies.sort(MovieSortKey::Rating);
+    movies.sort(MovieSortKey::MyRating, false);
     movies.show();
 }

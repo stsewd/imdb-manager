@@ -63,19 +63,21 @@ impl MovieList {
         self.data.push(movie);
     }
 
-    fn sort(&mut self, key: MovieSortKey) {
+    fn sort(&mut self, key: MovieSortKey, reverse: bool) {
         self.data.sort_unstable_by(|a, b| -> std::cmp::Ordering {
+            let (a, b) = if reverse { (b, a) } else { (a, b) };
+            let default_value = if reverse { 0.0 } else { 99.99 };
             match key {
                 MovieSortKey::Title => a.title.cmp(&b.title),
                 MovieSortKey::Rating => a
                     .rating
-                    .unwrap_or(0.0)
-                    .partial_cmp(&b.rating.unwrap_or(0.0))
+                    .unwrap_or(default_value)
+                    .partial_cmp(&b.rating.unwrap_or(default_value))
                     .unwrap(),
                 MovieSortKey::MyRating => a
                     .my_rating
-                    .unwrap_or(0.0)
-                    .partial_cmp(&b.my_rating.unwrap_or(0.0))
+                    .unwrap_or(default_value)
+                    .partial_cmp(&b.my_rating.unwrap_or(default_value))
                     .unwrap(),
                 MovieSortKey::Year => a.year.cmp(&b.year),
             }
