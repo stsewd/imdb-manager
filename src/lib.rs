@@ -1,5 +1,6 @@
 use serde::Deserialize;
 use std::io::Read;
+use std::str::FromStr;
 
 pub mod cli;
 
@@ -43,11 +44,26 @@ impl Movie {
     }
 }
 
+#[derive(Debug)]
 pub enum MovieSortKey {
     Title,
     Rating,
     MyRating,
     Year,
+}
+
+impl FromStr for MovieSortKey {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "year" => Ok(MovieSortKey::Year),
+            "title" => Ok(MovieSortKey::Title),
+            "rating" => Ok(MovieSortKey::Rating),
+            "my-rating" => Ok(MovieSortKey::MyRating),
+            _ => Err("No match"),
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -64,7 +80,7 @@ impl MovieList {
     }
 
     fn sort(&mut self, key: MovieSortKey, reverse: bool) {
-        self.data.sort_unstable_by(|a, b| -> std::cmp::Ordering {
+        self.data.sort_by(|a, b| -> std::cmp::Ordering {
             let (a, b) = if reverse { (b, a) } else { (a, b) };
             let default_value = if reverse { 0.0 } else { 99.99 };
             match key {
